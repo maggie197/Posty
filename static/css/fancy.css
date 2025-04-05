@@ -1,0 +1,26 @@
+/* Custom (fancy) button styles */
+.btn-fancy {
+    background-color: #6e0a83; /* Custom background color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    padding: 12px 24px; /* Custom padding */
+    font-size: 16px; /* Custom font size */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
+.btn-custom:hover {
+    background-color: #C70039; /* Change background color on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+}
+
+/* Additional custom styles */
+body { font-family: Arial, sans-serif; margin: 20px; }
+.gallery { display: flex; flex-wrap: wrap; gap: 15px; }
+.item { border: 1px solid #ccc; padding: 10px; width: 250px; text-align: center; }
+.item img { max-width: 100%; height: auto; }
+.comments { font-size: 0.9em; color: #333; margin-top: 10px; }
+.container { margin-top: 30px; }
+.form-group { margin-bottom: 1em; }
+.upload-btn { margin-top: 10px; }
