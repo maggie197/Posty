@@ -1,0 +1,44 @@
+button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2ecc71;
+}
+
+/* Style the Navigation Bar */
+nav {
+    background-color: #333;
+    overflow: hidden;
+}
+
+nav a {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+nav a:hover {
+    background-color: #d0e9da;
+    color: rgb(0, 0, 0);
+}
+
+nav a.active {
+    background-color: #3498db;
+    color: white;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
