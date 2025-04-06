@@ -1,41 +1,38 @@
-from flask import Flask, render_template, request, redirect, url_for
-from werkzeug.utils import secure_filename
 import os
+from flask import Flask, request, redirect, url_for, render_template
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# Configuring the secret key for form handling
-app.config['SECRET_KEY'] = 'your_secret_key_here'
+# Configure upload folder
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Configure the upload folder and allowed extensions
-app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'
+# Allowed extensions
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-# Make sure the uploads folder exists
-os.makedirs(app.config['UPLOADED_PHOTOS_DEST'], exist_ok=True)
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# This will hold the list of image filenames and comments
-gallery = []
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files.get('file')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            return redirect(url_for('display_file', filename=filename))
+    return render_template('index.html')
 
-@app.route('/')
-def index():
-    return render_template('index.html', gallery=gallery)
+@app.route('/display/<filename>')
+def display_file(filename):
+    return render_template('display.html', filename=filename)
 
-@app.route('/upload', methods=['POST'])
-def upload_image():
-    if 'image' in request.files:
-        image = request.files['image']
-        filename = secure_filename(image.filename)
-        # Save the file to the uploads folder
-        image.save(os.path.join(app.config['UPLOADED_PHOTOS_DEST'], filename))
-        gallery.append({'filename': filename, 'comments': []})
-    return redirect(url_for('index'))
-
-@app.route('/comment/<int:image_id>', methods=['POST'])
-def add_comment(image_id):
-    comment = request.form['comment']
-    if 0 <= image_id < len(gallery):
-        gallery[image_id]['comments'].append(comment)
-    return redirect(url_for('index'))
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 if __name__ == '__main__':
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     app.run(debug=True)
