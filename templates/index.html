@@ -1,52 +1,20 @@
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Photo Gallery</title>
-  
-  <!-- Bootstrap 5 CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6H2Y2Q0i2XdpilFH2G2m3u4F1c5Z7y5G6m4wNpyCTSTVhdCg58dpMli2lV" crossorigin="anonymous">
-  
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .gallery { display: flex; flex-wrap: wrap; gap: 15px; }
-    .item { border: 1px solid rgb(174, 215, 227); padding: 10px; width: 250px; text-align: center; }
-    .item img { max-width: 100%; height: auto; }
-    .comments { font-size: 0.9em; color: #333; margin-top: 10px; }
-    .container { margin-top: 30px; }
-    .form-group { margin-bottom: 1em; }
-    .upload-btn { margin-top: 10px; }
-  </style>
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
-
 <body>
-  <h1>Photo Gallery</h1>
+    <nav>
+        <a href="/" class="active">Home</a>
+        <a href="/contact">Contact</a>
+    </nav>
+    <h1>Upload an Image</h1>
 
-  <!-- Form to upload images -->
-  <form action="/upload" method="POST" enctype="multipart/form-data">
-    <input type="file" name="image" accept="image/*" required>
-    <button type="submit">Upload</button>
-  </form>
-
-  <div class="gallery">
-    {% for item in gallery %}
-      <div class="item">
-        <img src="{{ url_for('static', filename='uploads/' + item.filename) }}" alt="Uploaded Image">
-        
-        <!-- Form to add comments to the image -->
-        <form action="/comment/{{ loop.index0 }}" method="POST">
-          <input type="text" name="comment" placeholder="Add a comment" required>
-          <button type="submit">Add Comment</button>
-        </form>
-
-        <!-- Display existing comments -->
-        <div class="comments">
-          {% for comment in item.comments %}
-            <p>🗨️ {{ comment }}</p>
-          {% endfor %}
-        </div>
-      </div>
-    {% endfor %}
-  </div>
-
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*">
+        <button type="submit">Upload</button>
+    </form>
 </body>
 </html>
