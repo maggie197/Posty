@@ -4,6 +4,15 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 <body>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul>
+      {% for category, message in messages %}
+        <li style="color: red;">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
 
     <h2>Login</h2>
     <form method="POST">
@@ -15,12 +24,4 @@
 </body>
 </html>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-      {% for category, message in messages %}
-        <li style="color: red;">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+
