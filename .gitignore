@@ -9,4 +9,5 @@ static/uploads
 instance.tf
 terraform.tfstate
 terraform-key.json
- terraform.tfstate.backup
+terraform.tfstate.backup
+
