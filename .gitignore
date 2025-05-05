@@ -1,3 +1,12 @@
 user.db
 instance
 __pycache__
+static/uploads
+
+
+.terraform
+.terraform.lock.hcl
+instance.tf
+terraform.tfstate
+terraform-key.json
+ terraform.tfstate.backup
