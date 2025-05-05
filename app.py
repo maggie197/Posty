@@ -117,6 +117,6 @@ def contact():
     return render_template('contact.html')
 
 # Main
-if __name__ == '__main__':
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=80)
+
