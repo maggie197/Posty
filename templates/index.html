@@ -33,6 +33,22 @@
         <button type="submit">Upload</button>
     </form>
    
+    <!-- NEW: gallery list -->
+    <h2>Your Galleries</h2>
+    {% if galleries %}
+      <ul>
+        {% for gallery in galleries %}
+          <li>
+            <strong>{{ gallery.name }}</strong> - created on {{ gallery.created_at.strftime('%Y-%m-%d') }}
+            <br>
+            <a href="{{ url_for('gallery.view_gallery', id=gallery.id) }}">View Gallery</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>You don’t have any galleries yet.</p>
+    {% endif %}
+    
 </body>
 </html>
 
