@@ -3,7 +3,7 @@ instance
 __pycache__
 static/uploads
 
-
+venv
 .terraform
 .terraform.lock.hcl
 instance.tf
