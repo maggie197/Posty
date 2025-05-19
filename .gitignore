@@ -1,7 +1,7 @@
 user.db
 instance
 __pycache__
-static/uploads
+uploads
 
 venv
 .terraform

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head><title>{{ gallery.name }}</title></head>
+<body>
+<h1>{{ gallery.name }}</h1>
+
+<h3>Upload photo to this gallery</h3>
+<form action="{{ url_for('upload_to_gallery', id=gallery.id) }}"
+      method="post" enctype="multipart/form-data">
+  <input type="file" name="file" required>
+  <button type="submit">Upload</button>
+</form>
+
+<hr>
+{% if photos %}
+  <ul>
+  {% for p in photos %}
+    <li>
+      <img src="{{ url_for('uploaded_file',
+                           user_id=current_user.id,
+                           gallery_id=gallery.id,
+                           filename=p.filename) }}"
+           width="250">
+      Uploaded: {{ p.uploaded_at.strftime('%Y-%m-%d %H:%M') }}
+    </li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>No photos yet.</p>
+{% endif %}
+
+<p><a href="{{ url_for('index') }}">← Back to profile</a></p>
+</body></html>
