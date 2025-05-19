@@ -12,6 +12,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
+# Upload folder 
+
+UPLOAD_FOLDER = 'uploads' 
+
 # Database Initialization
 db.init_app(app)
 with app.app_context():
@@ -81,7 +85,9 @@ def register():
 @app.route('/index')
 @login_required
 def index():
-    return render_template('index.html')
+    galleries = current_user.galleries  # fetch logged-in user’s galleries
+    return render_template('index.html', galleries=galleries)
+
 
 @app.route('/logout')
 @login_required
