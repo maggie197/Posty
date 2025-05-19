@@ -1,15 +1,15 @@
 import os
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import (Flask, render_template, redirect, url_for, request, flash, send_from_directory, abort)
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User  # Import database and User model
+from models import db, User, Gallery, Photo, Comment
 
 # App Initialization
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = 'uploads'    # !!! new
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Upload folder 
@@ -33,6 +33,21 @@ def load_user(user_id):
 # Helpers
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+#!!! new
+from pathlib import Path
+import uuid
+
+def save_photo(file_storage_obj, gallery):
+    """Save the uploaded file in uploads/<user>/<gallery>/ and return filename"""
+    root = Path(app.config['UPLOAD_FOLDER'])
+    gpath = root / str(gallery.user_id) / str(gallery.id)
+    gpath.mkdir(parents=True, exist_ok=True)
+
+    ext = Path(file_storage_obj.filename).suffix.lower()
+    filename = f"{uuid.uuid4().hex}{ext}"
+    file_storage_obj.save(gpath / filename)
+    return filename
+# !!!!
 
 # Routes
 @app.route('/', methods=['GET', 'POST'])
@@ -100,7 +115,7 @@ def logout():
 def display_file(filename):
     return render_template('upload.html', filename=filename)
 
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/upload', methods=['GET', 'POST'])  # check if needs deletion
 @login_required
 def upload_file():
     if request.method == 'POST':
@@ -117,7 +132,51 @@ def upload_file():
             return redirect(url_for('upload_file'))
 
     return render_template('upload.html')  # create an upload.html form
+# !!! new 
+@app.route('/galleries', methods=['POST'])
+@login_required
+def new_gallery():
+    name = request.form.get('name', '').strip()
+    if not name:
+        flash('Gallery name required', 'error')
+        return redirect(url_for('index'))
 
+    g = Gallery(name=name, user=current_user)
+    db.session.add(g); db.session.commit()
+    flash('Gallery created!', 'success')
+    return redirect(url_for('view_gallery', id=g.id))
+
+@app.route('/galleries/<int:id>')
+@login_required
+def view_gallery(id):
+    gallery = Gallery.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    return render_template('gallery_view.html', gallery=gallery, photos=gallery.photos)
+
+@app.route('/galleries/<int:id>/photos', methods=['POST'])
+@login_required
+def upload_to_gallery(id):
+    gallery = Gallery.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    file = request.files.get('file')
+    if not (file and allowed_file(file.filename)):
+        flash('Invalid file', 'error')
+        return redirect(url_for('view_gallery', id=id))
+
+    filename = save_photo(file, gallery)
+    photo = Photo(filename=filename, gallery=gallery)
+    db.session.add(photo); db.session.commit()
+    flash('Photo uploaded!', 'success')
+    return redirect(url_for('view_gallery', id=id))
+
+@app.route('/uploads/<int:user_id>/<int:gallery_id>/<filename>')
+@login_required
+def uploaded_file(user_id, gallery_id, filename):
+    if user_id != current_user.id:
+        abort(403)
+    directory = os.path.join(app.config['UPLOAD_FOLDER'], str(user_id), str(gallery_id))
+    return send_from_directory(directory, filename)
+
+
+# !! 
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
