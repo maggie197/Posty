@@ -6,7 +6,6 @@ uploads
 venv
 .terraform
 .terraform.lock.hcl
-instance.tf
 terraform.tfstate
 terraform-key.json
 terraform.tfstate.backup
