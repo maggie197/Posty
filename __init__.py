@@ -22,7 +22,7 @@ def create_app():
     # dont have: app.register_blueprint(main_bp)
 
     # ---------- NEW: register the gallery blueprint ----------
-    from .gallery import gallery_bp      # add this line
-    app.register_blueprint(gallery_bp)          # and this line
-
+    from .gallery import gallery_bp     
+    app.register_blueprint(gallery_bp)        
+    
     return app
