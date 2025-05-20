@@ -3,6 +3,10 @@ from pathlib import Path
 import uuid
 from flask import current_app
 
+def allowed_file(filename):
+    allowed = current_app.config.get("ALLOWED_EXTENSIONS", set())
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed
+
 def save_photo(file_storage_obj, gallery):
     UPLOAD_ROOT = Path(current_app.config.get("UPLOAD_FOLDER", "uploads"))
 

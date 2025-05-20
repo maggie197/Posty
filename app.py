@@ -1,16 +1,28 @@
 import os
-from flask import (Flask, render_template, redirect, url_for, request, flash, send_from_directory, abort)
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from pathlib import Path
+import uuid
+
+from flask import (
+    Flask, render_template, redirect, url_for, request, flash, send_from_directory, abort
+)
+from flask_login import (
+    LoginManager, login_user, login_required, logout_user, current_user
+)
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
+
 from models import db, User, Gallery, Photo, Comment
+from utils import save_photo, allowed_file
+
 
 # App Initialization
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-app.config['UPLOAD_FOLDER'] = 'uploads'    # !!! new
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+app.config.update(
+    SECRET_KEY='your_secret_key',
+    SQLALCHEMY_DATABASE_URI='sqlite:///db.sqlite',
+    UPLOAD_FOLDER='uploads',
+    ALLOWED_EXTENSIONS={'png', 'jpg', 'jpeg', 'gif'}
+)
 
 # Upload folder 
 
@@ -30,24 +42,7 @@ login_manager.init_app(app)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Helpers
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-#!!! new
-from pathlib import Path
-import uuid
 
-def save_photo(file_storage_obj, gallery):
-    """Save the uploaded file in uploads/<user>/<gallery>/ and return filename"""
-    root = Path(app.config['UPLOAD_FOLDER'])
-    gpath = root / str(gallery.user_id) / str(gallery.id)
-    gpath.mkdir(parents=True, exist_ok=True)
-
-    ext = Path(file_storage_obj.filename).suffix.lower()
-    filename = f"{uuid.uuid4().hex}{ext}"
-    file_storage_obj.save(gpath / filename)
-    return filename
-# !!!!
 
 # Routes
 @app.route('/', methods=['GET', 'POST'])
