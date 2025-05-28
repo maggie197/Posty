@@ -50,19 +50,7 @@
   <button type="submit">Create</button>
 </form>
 
-<h2>Your Galleries</h2>
-{% if galleries %}
-  <ul>
-    {% for g in galleries %}
-      <li>
-        <strong>{{ g.name }}</strong>
-        (<a href="{{ url_for('view_gallery', id=g.id) }}">open</a>)
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No galleries yet.</p>
-{% endif %}
+
 
 
 
